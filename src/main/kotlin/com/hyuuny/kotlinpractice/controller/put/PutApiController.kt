@@ -1,15 +1,17 @@
 package com.hyuuny.kotlinpractice.controller.put
 
-import com.hyuuny.kotlinpractice.model.http.Result
 import com.hyuuny.kotlinpractice.model.http.UserRequest
-import com.hyuuny.kotlinpractice.model.http.UserResponse
+import org.springframework.http.ResponseEntity
+import org.springframework.validation.BindingResult
+import org.springframework.validation.FieldError
 import org.springframework.web.bind.annotation.*
+import javax.validation.Valid
 
 @RestController
 @RequestMapping("/api")
 class PutApiController {
 
-    @PutMapping("/put-mappping")
+    @PutMapping("/put-mapping")
     fun putMapping(): String {
         return "put-mapping"
     }
@@ -20,37 +22,53 @@ class PutApiController {
     }
 
     @PutMapping(path = ["/put-mapping/object"])
-    fun putMethodObject(@RequestBody userRequest: UserRequest): UserResponse {
-        // 0. Response
-        return UserResponse().apply {
-            // 1. result
-            this.result = Result().apply {
-                this.resultCode = "OK"
-                this.resultMessage = "성공"
+    fun putMethodObject(
+        @Valid @RequestBody userRequest: UserRequest,
+        bindingResult: BindingResult
+    ): ResponseEntity<String> {
+
+        if (bindingResult.hasErrors()) {
+            // 500 error
+            val msg = StringBuilder()
+            bindingResult.allErrors.forEach {
+                val field = it as FieldError
+                val message = it.defaultMessage
+                msg.append("${field.field} : $message\n")
             }
-        }.apply {
-            // 2. description
-            this.description = "~~~~~~~~~~"
-        }.apply {
-            // 3. user mutable list
-            val userList = mutableListOf<UserRequest>()
-            userList.add(userRequest)
-            userList.add(UserRequest().apply {
-                this.name = "a"
-                this.age = 10
-                this.email = "a@gamil.com"
-                this.address = "a address"
-                this.phoneNumber = "010-1234-1234"
-            })
-            userList.add(UserRequest().apply {
-                this.name = "b"
-                this.age = 20
-                this.email = "b@gamil.com"
-                this.address = "b address"
-                this.phoneNumber = "010-4567-4567"
-            })
-            this.userRequest = userList
+            return ResponseEntity.badRequest().body(msg.toString())
         }
+
+        // 0. Response
+//        return UserResponse().apply {
+//            // 1. result
+//            this.result = Result().apply {
+//                this.resultCode = "OK"
+//                this.resultMessage = "성공"
+//            }
+//        }.apply {
+//            // 2. description
+//            this.description = "~~~~~~~~~~"
+//        }.apply {
+//            // 3. user mutable list
+//            val userList = mutableListOf<UserRequest>()
+//            userList.add(userRequest)
+//            userList.add(UserRequest().apply {
+//                this.name = "a"
+//                this.age = 10
+//                this.email = "a@gamil.com"
+//                this.address = "a address"
+//                this.phoneNumber = "010-1234-1234"
+//            })
+//            userList.add(UserRequest().apply {
+//                this.name = "b"
+//                this.age = 20
+//                this.email = "b@gamil.com"
+//                this.address = "b address"
+//                this.phoneNumber = "010-4567-4567"
+//            })
+//            this.userRequest = userList
+//        }
+        return ResponseEntity.ok("")
     }
 
 }

@@ -9,7 +9,7 @@ class GetApiController {
 
     @GetMapping("/hello")
     fun hello(): String {
-        return "hello kopring"
+        return "hello world"
     }
 
     @RequestMapping(method = [RequestMethod.GET], path = ["/request-mapping"])

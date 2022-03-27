@@ -2,7 +2,8 @@ package com.hyuuny.kotlinpractice.model.http
 
 data class UserRequest(
     var name: String? = null,
-    val age: Int? = null,
-    val email: String? = null,
-    val address: String? = null
+    var age: Int? = null,
+    var email: String? = null,
+    var address: String? = null,
+    var phoneNumber: String? = null // phone_number
 )
